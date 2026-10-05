@@ -1,0 +1,20 @@
+packages:
+  - apps/*
+  - packages/*
+  - tooling/*
+  - vendor/*
+
+injectWorkspacePackages: true
+
+syncInjectedDepsAfterScripts:
+  - build
+
+overrides:
+  '@tanstack/time': workspace:*
+  '@tanstack/react-time': workspace:*
+
+allowBuilds:
+  '@nestjs/core': false
+  esbuild: true
+  sharp: true
+  unrs-resolver: false

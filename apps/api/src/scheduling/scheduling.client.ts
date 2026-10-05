@@ -1,0 +1,70 @@
+import {
+  HttpException,
+  Inject,
+  Injectable,
+  ServiceUnavailableException,
+} from '@nestjs/common';
+import type { ClientProxy } from '@nestjs/microservices';
+import {
+  type Booking,
+  type CreateBookingRequest,
+  type HealthResponse,
+  type ListSlotsRequest,
+  type ListSlotsResponse,
+  type RpcError,
+  SchedulingPatterns,
+} from '@scheduler/contracts';
+import { firstValueFrom, timeout } from 'rxjs';
+
+export const SCHEDULING_SERVICE = Symbol('SCHEDULING_SERVICE');
+
+const REQUEST_TIMEOUT_MS = 5000;
+
+function isRpcError(error: unknown): error is RpcError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    typeof (error as RpcError).status === 'number' &&
+    typeof (error as RpcError).message === 'string'
+  );
+}
+
+@Injectable()
+export class SchedulingClient {
+  @Inject(SCHEDULING_SERVICE)
+  private readonly client: ClientProxy;
+
+  health(): Promise<HealthResponse> {
+    return this.send(SchedulingPatterns.health, {});
+  }
+
+  listSlots(request: ListSlotsRequest): Promise<ListSlotsResponse> {
+    return this.send(SchedulingPatterns.listSlots, request);
+  }
+
+  createBooking(request: CreateBookingRequest): Promise<Booking> {
+    return this.send(SchedulingPatterns.createBooking, request);
+  }
+
+  private async send<TResult>(
+    pattern: string,
+    payload: object,
+  ): Promise<TResult> {
+    try {
+      return await firstValueFrom(
+        this.client
+          .send<TResult>(pattern, payload)
+          .pipe(timeout(REQUEST_TIMEOUT_MS)),
+      );
+    } catch (error) {
+      if (isRpcError(error))
+        throw new HttpException(error.message, error.status);
+      throw new ServiceUnavailableException(
+        `Scheduling service failed on ${pattern}`,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+}

@@ -1,0 +1,7 @@
+**/node_modules
+**/dist
+!vendor/*/dist
+**/.next
+**/.env
+**/coverage
+.git

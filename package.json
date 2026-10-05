@@ -1,0 +1,24 @@
+{
+  "name": "scheduler-saas",
+  "private": true,
+  "packageManager": "pnpm@11.1.0",
+  "scripts": {
+    "vendor:time": "sh scripts/vendor-tanstack-time.sh",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "format:check": "turbo run format:check",
+    "test": "turbo run test",
+    "infra:up": "docker compose up -d db rabbitmq",
+    "db:up": "docker compose up -d db",
+    "db:generate": "pnpm --filter scheduling db:generate",
+    "db:migrate": "pnpm --filter scheduling db:migrate"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "oxfmt": "^0.72.0",
+    "oxlint": "^1.58.0",
+    "turbo": "^2.11.7"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "pedantic": "off",
+    "perf": "warn",
+    "style": "off",
+    "restriction": "off"
+  },
+  "options": {
+    "typeAware": true
+  },
+  "plugins": ["eslint", "typescript", "unicorn", "oxc"],
+  "rules": {
+    "typescript/no-extraneous-class": ["warn", { "allowWithDecorator": true }]
+  },
+  "ignorePatterns": [
+    "dist/**",
+    ".next/**",
+    "build/**",
+    "coverage/**",
+    "node_modules/**",
+    "**/*.d.ts"
+  ],
+  "overrides": [
+    {
+      "files": ["apps/web/**/*.ts", "apps/web/**/*.tsx"],
+      "plugins": ["eslint", "typescript", "unicorn", "oxc", "react", "nextjs"],
+      "rules": {
+        "react/react-in-jsx-scope": "off"
+      }
+    },
+    {
+      "files": ["apps/api/src/scheduling/scheduling.client.ts"],
+      "rules": {
+        "typescript/no-unsafe-type-assertion": "off"
+      }
+    },
+    {
+      "files": ["apps/notifications/src/bookings/booking-notifications.controller.ts"],
+      "rules": {
+        "typescript/no-unnecessary-type-arguments": "off"
+      }
+    }
+  ]
+}

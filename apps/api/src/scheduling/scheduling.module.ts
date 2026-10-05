@@ -1,0 +1,30 @@
+import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { SCHEDULING_QUEUE } from '@scheduler/contracts';
+import { BookingsController } from './bookings.controller';
+import { SCHEDULING_SERVICE, SchedulingClient } from './scheduling.client';
+import { SlotsController } from './slots.controller';
+
+@Module({
+  imports: [
+    ClientsModule.registerAsync([
+      {
+        name: SCHEDULING_SERVICE,
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [config.getOrThrow<string>('RABBITMQ_URL')],
+            queue: SCHEDULING_QUEUE,
+            queueOptions: { durable: true },
+          },
+        }),
+      },
+    ]),
+  ],
+  controllers: [SlotsController, BookingsController],
+  providers: [SchedulingClient],
+  exports: [SchedulingClient],
+})
+export class SchedulingModule {}
