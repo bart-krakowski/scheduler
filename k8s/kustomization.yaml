@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: scheduler-saas
+
+resources:
+  - base/namespace.yaml
+  - base/configmap.yaml
+  - base/secrets.yaml
+  - base/postgres.yaml
+  - base/rabbitmq.yaml
+  - base/migrate.yaml
+  - base/api.yaml
+  - base/notifications.yaml
+  - base/scheduling.yaml
+  - base/web.yaml
+  - base/ingress.yaml

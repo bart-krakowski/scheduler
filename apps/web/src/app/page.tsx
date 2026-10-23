@@ -1,13 +1,10 @@
-import { Suspense } from 'react';
-import { SlotList } from './slot-list';
+import { CalendarViewClient } from '@/components/calendar/calendar-view-client';
+import './calendar.css';
 
-export default function Home() {
+export default function CalendarPage() {
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-16">
-      <h1 className="text-3xl font-semibold tracking-tight">Available slots</h1>
-      <Suspense fallback={<p className="text-zinc-500">Loading slots…</p>}>
-        <SlotList />
-      </Suspense>
+    <main className="min-h-screen bg-black">
+      <CalendarViewClient />
     </main>
   );
 }

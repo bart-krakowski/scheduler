@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Inject, Post } from '@nestjs/common';
 import type { Booking } from '@scheduler/contracts';
 import { parseDate } from './parse-date';
 import { SchedulingClient } from './scheduling.client';
@@ -10,7 +10,7 @@ interface CreateBookingBody {
 
 @Controller('bookings')
 export class BookingsController {
-  constructor(private readonly scheduling: SchedulingClient) {}
+  constructor(@Inject(SchedulingClient) private readonly scheduling: SchedulingClient) {}
 
   @Post()
   create(@Body() body: CreateBookingBody): Promise<Booking> {

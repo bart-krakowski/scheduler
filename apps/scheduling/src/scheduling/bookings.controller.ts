@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Inject } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   type Booking,
@@ -9,7 +9,7 @@ import { BookingsService } from './bookings.service';
 
 @Controller()
 export class BookingsController {
-  constructor(private readonly bookings: BookingsService) {}
+  constructor(@Inject(BookingsService) private readonly bookings: BookingsService) {}
 
   @MessagePattern(SchedulingPatterns.createBooking)
   create(@Payload() request: CreateBookingRequest): Promise<Booking> {

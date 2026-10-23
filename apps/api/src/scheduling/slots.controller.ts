@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Inject, Query } from '@nestjs/common';
 import type { ListSlotsResponse } from '@scheduler/contracts';
 import { parseDate } from './parse-date';
 import { SchedulingClient } from './scheduling.client';
@@ -8,7 +8,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 
 @Controller('slots')
 export class SlotsController {
-  constructor(private readonly scheduling: SchedulingClient) {}
+  constructor(@Inject(SchedulingClient) private readonly scheduling: SchedulingClient) {}
 
   @Get()
   list(

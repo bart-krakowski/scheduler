@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: scheduler-migrate
+  namespace: scheduler-saas
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.37
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z postgres 5432; do
+                echo "Waiting for postgres..."
+                sleep 2
+              done
+      containers:
+        - name: migrate
+          image: ghcr.io/scheduler-saas/scheduling:latest
+          imagePullPolicy: IfNotPresent
+          command: ["node", "dist/database/migrate.js"]
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: scheduler-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: scheduler-secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: scheduler-config
+                  key: POSTGRES_DB
+            - name: DATABASE_URL
+              value: "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/$(POSTGRES_DB)"
+  backoffLimit: 4

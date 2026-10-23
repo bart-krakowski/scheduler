@@ -1,10 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Inject } from '@nestjs/common';
 import type { HealthResponse } from '@scheduler/contracts';
 import { SchedulingClient } from '../scheduling/scheduling.client';
 
 @Controller('health')
 export class HealthController {
-  constructor(private readonly scheduling: SchedulingClient) {}
+  constructor(@Inject(SchedulingClient) private readonly scheduling: SchedulingClient) {}
 
   @Get()
   check(): Promise<HealthResponse> {

@@ -44,7 +44,7 @@ export class BookingsService {
   @Inject(NOTIFICATIONS_CLIENT)
   private readonly notifications: ClientProxy;
 
-  constructor(private readonly slots: SlotsService) {}
+  constructor(@Inject(SlotsService) private readonly slots: SlotsService) {}
 
   async create({ ruleId, start }: CreateBookingRequest): Promise<Booking> {
     if (!slotRules.some((rule) => rule.id === ruleId)) {
