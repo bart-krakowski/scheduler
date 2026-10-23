@@ -19,6 +19,12 @@
     "format:check": {},
     "test": {
       "dependsOn": ["build"]
+    },
+    "db:generate": {
+      "cache": false
+    },
+    "db:migrate": {
+      "cache": false
     }
   }
 }

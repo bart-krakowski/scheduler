@@ -5,8 +5,7 @@ WORKDIR /repo
 FROM base AS build
 COPY . .
 RUN pnpm install --frozen-lockfile
-RUN pnpm --filter @scheduler/contracts build
-RUN pnpm --filter scheduling build
+RUN pnpm exec turbo run build --filter=scheduling
 RUN pnpm --filter scheduling deploy --prod /out
 
 FROM node:24-alpine AS runtime

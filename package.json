@@ -12,8 +12,8 @@
     "test": "turbo run test",
     "infra:up": "docker compose up -d db rabbitmq",
     "db:up": "docker compose up -d db",
-    "db:generate": "pnpm --filter scheduling db:generate",
-    "db:migrate": "pnpm --filter scheduling db:migrate",
+    "db:generate": "turbo run db:generate",
+    "db:migrate": "turbo run db:migrate",
     "k8s:build": "sh scripts/k8s-build.sh",
     "k8s:deploy": "sh scripts/k8s-deploy.sh",
     "k8s:local": "sh scripts/k8s-local.sh"

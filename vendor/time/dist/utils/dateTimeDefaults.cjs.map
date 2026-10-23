@@ -1,0 +1,1 @@
+{"version":3,"file":"dateTimeDefaults.cjs","names":[],"sources":["../../src/utils/dateTimeDefaults.ts"],"sourcesContent":["const defaults = new Intl.DateTimeFormat().resolvedOptions()\n\nexport function getDateTimeDefaults() {\n  return defaults\n}\n"],"mappings":";AAAA,MAAM,WAAW,IAAI,KAAK,eAAe,CAAC,CAAC,gBAAgB;AAE3D,SAAgB,sBAAsB;CACpC,OAAO;AACT"}
