@@ -44,9 +44,20 @@ jobs:
       - uses: azure/setup-kubectl@v4
         with:
           version: v1.31.0
-      - run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBECONFIG }}" | base64 -d > ~/.kube/config
+      - env:
+          K8S_SERVER: ${{ secrets.K8S_SERVER }}
+          K8S_CA_CERT: ${{ secrets.K8S_CA_CERT }}
+          K8S_TOKEN: ${{ secrets.K8S_TOKEN }}
+        run: |
+          for var in K8S_SERVER K8S_CA_CERT K8S_TOKEN; do
+            test -n "${!var}" || { echo "$var secret is empty"; exit 1; }
+          done
+          echo "$K8S_CA_CERT" | base64 -d > "$RUNNER_TEMP/ca.crt"
+          kubectl config set-cluster target --server="$K8S_SERVER" --certificate-authority="$RUNNER_TEMP/ca.crt" --embed-certs=true
+          kubectl config set-credentials ci-deployer --token="$K8S_TOKEN"
+          kubectl config set-context target --cluster=target --user=ci-deployer --namespace=scheduler-saas
+          kubectl config use-context target
+          kubectl auth can-i patch deployment/api -n scheduler-saas
       - run: |
           for app in api notifications scheduling web; do
             kubectl set image deployment/$app $app=${{ env.REGISTRY }}/$app:${{ github.sha }} -n scheduler-saas
